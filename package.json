@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "react-scripts start",
+    "eject": "react-scripts eject",
+    "test": "react-scripts test",
     "sass": "node-sass src/pokemon/pokemon_container.scss -o dist/css",
     "sass:watch": "node-sass src/pokemon -o dist/css --watch",
     "dev": "vite",
