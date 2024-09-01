@@ -1,0 +1,52 @@
+* {
+  font-family: "Luckiest Guy", cursive;
+}
+
+body {
+  margin: 0;
+  padding: 5px;
+  background-color: rgb(255, 225, 205);
+}
+
+.top-container {
+  margin: 20px auto;
+  display: flex;
+  width: 37%;
+}
+.top-container .main-logo-text {
+  margin: 0 auto;
+  align-self: center;
+  font-size: 3.2rem;
+  padding: 1rem;
+  color: red;
+}
+.top-container img {
+  margin: 0 auto;
+  border-radius: 50%;
+  transition: all 1s ease-in-out;
+  width: 200px;
+}
+.top-container img:hover {
+  transform: rotate(360deg);
+}
+.top-container nav ul li {
+  list-style-type: none;
+  margin: 5px auto;
+  background: rgb(77, 73, 73);
+  text-align: center;
+  border-radius: 7px;
+  padding: 5px;
+}
+.top-container nav ul li:hover {
+  transform: scale(1.06);
+}
+.top-container nav ul li a {
+  transition: all 0.2s ease-in-out;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: red;
+}
+.top-container nav ul li a:hover {
+  transform: scale(1.02);
+  color: yellow;
+}
