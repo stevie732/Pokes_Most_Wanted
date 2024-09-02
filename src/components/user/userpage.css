@@ -1,0 +1,55 @@
+.user-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+.user-page h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.user-page input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.user-page button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-page button.update {
+  background-color: #4caf50;
+  color: white;
+}
+
+.user-page button.update:hover {
+  background-color: #45a049;
+}
+
+.user-page button.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.user-page button.delete:hover {
+  background-color: #e53935;
+}

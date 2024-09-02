@@ -6,19 +6,25 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import AvailablePokemon from "./pokemon/AvailablePokemon";
 import UserPokemon from "./pokemon/UserPokemon";
+import UserPage from "./components/user/UserPage";
+import Footer from "./components/footer/Footer";
+import SearchBar from "./components/searchbar/SearchBar";
+
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { Pokemon, Ability, PokemonType } from "./types/types";
+
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Footer from "./components/Footer";
 
 function App() {
   const auth = getAuth();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [availablePokemons, setAvailablePokemons] = useState<Pokemon[]>([]);
+  const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
   const [userPokemons, setUserPokemons] = useState<Pokemon[]>([]);
   const db = getFirestore();
 
@@ -27,10 +33,12 @@ function App() {
       if (user) {
         setIsLoggedIn(true);
         setUser(user.uid);
+        setUsername(user.displayName || "");
         localStorage.setItem("user", user.uid);
       } else {
         setIsLoggedIn(false);
         setUser("");
+        setUsername("");
         localStorage.removeItem("user");
       }
     });
@@ -49,7 +57,7 @@ function App() {
   useEffect(() => {
     const getAvailablePokeData = async () => {
       const apiUrl: string = "https://pokeapi.co/api/v2";
-      const limit: number = 52;
+      const limit: number = 151;
       const offset: number = 0;
       const url: string = `${apiUrl}/pokemon?limit=${limit}&offset=${offset}`;
 
@@ -88,6 +96,7 @@ function App() {
         );
 
         setAvailablePokemons(updatedPokemonList);
+        setFilteredPokemons(updatedPokemonList); // Initialize filteredPokemons
       } catch (error) {
         console.error("Error fetching data from the PokeAPI:", error);
       }
@@ -130,6 +139,7 @@ function App() {
       await signOut(auth);
       setIsLoggedIn(false);
       setUser("");
+      setUsername("");
       localStorage.removeItem("user");
       console.log(user, "has been logged out");
     } catch (error) {
@@ -150,10 +160,20 @@ function App() {
     setUserPokemons(updatedPokemon);
   };
 
+  const handleSearch = (query: string) => {
+    const lowercasedQuery = query.toLowerCase();
+    const filtered = availablePokemons.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredPokemons(filtered);
+  };
+
   const HomePage = () => (
     <div>
+      <h2>Welcome, {username}</h2>
+      <SearchBar onSearch={handleSearch} />
       <AvailablePokemon
-        pokemons={availablePokemons}
+        pokemons={filteredPokemons}
         user={user}
         addPokemonToState={addPokemonToState}
       />
@@ -183,6 +203,13 @@ function App() {
       user={user}
       pokemons={userPokemons}
       removePokemonFromState={removePokemonFromState}
+    />
+  );
+
+  const UserPageComponent = (
+    <UserPage
+      username={username}
+      setUsername={setUsername}
     />
   );
 
@@ -216,6 +243,9 @@ function App() {
                   <li>
                     <Link to="/">Home</Link>
                   </li>
+                  <li>
+                    <Link to="/user">User</Link>
+                  </li>
                 </div>
               )}
             </ul>
@@ -225,6 +255,7 @@ function App() {
           <Route path="/login" element={LoginComponent} />
           <Route path="/register" element={RegisterComponent} />
           <Route path="/collection" element={CollectionComponent} />
+          <Route path="/user" element={UserPageComponent} />
           <Route
             path="/"
             element={
