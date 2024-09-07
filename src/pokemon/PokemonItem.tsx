@@ -1,5 +1,6 @@
 import React from "react";
 import "./pokeItem.css";
+import "./pokeItem.scss"; // Ensure SCSS is imported
 import { PokemonItemProps, Pokemon } from "../types/types";
 import { useState, useEffect } from "react";
 import {
@@ -13,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { AVAILABLE_FLOW, USER_FLOW, ADD_TEXT, OWNED_TEXT } from "../constants/constants";
+import { typeColors } from "../constants/typeColors"; // Import the type-to-color mapping
 
 const PokemonItem: React.FC<PokemonItemProps> = ({
   pokemon,
@@ -56,21 +58,20 @@ const PokemonItem: React.FC<PokemonItemProps> = ({
     checkIfPokemonInCollection(name);
   }, [db, name, userEmail]);
 
-  const handleAddPokemon = (pokemon: Pokemon): void => {
-    addDoc(collection(db, "pokemon"), pokemon)
-      .then(() => {
-        onAdd(pokemon);
-        addPokemonSuccessNotification(pokemon.name);
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
+  const handleAddPokemon = async (pokemon: Pokemon) => {
+    try {
+      const pokemonCollection = collection(db, "pokemons");
+      await addDoc(pokemonCollection, pokemon);
+      addPokemonSuccessNotification(pokemon.name);
+      onAdd(pokemon);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
-  const handleRemovePokemon = async (pokemonName: string): Promise<void> => {
+  const handleRemovePokemon = async (pokemonName: string) => {
     try {
-      const pokemonCollection = collection(db, "pokemon");
-
+      const pokemonCollection = collection(db, "pokemons");
       const pokemonQuery = query(
         pokemonCollection,
         where("name", "==", pokemonName)
@@ -97,13 +98,15 @@ const PokemonItem: React.FC<PokemonItemProps> = ({
   const isUserFlow: boolean = flow === USER_FLOW;
   const addText: string = !owned ? ADD_TEXT : OWNED_TEXT;
 
+  // Determine the background color based on the first type
+  const backgroundColor = typeColors[types[0]] || "#FFFFFF"; 
+
   return (
     <div className="pokemon-card">
       <div className="pokemon-details">
         <img src={image} alt={name} className="pokemon-image" />
-        <h3>{name}</h3>
+        <h3 style={{ backgroundColor }}>{name}</h3>
         <p>
-          {" "}
           <span>Types:</span> {types.join(", ")}
         </p>
         <p className="abilities">
